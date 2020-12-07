@@ -161,10 +161,10 @@ def complexValid(valid_Dict_data):
             valid_passport = True
         else:
             valid_passport = False
-            print(passenger)
             continue
 
         if valid_passport:
+            print(passenger)
             valid_passports += 1
 
     return valid_passports
