@@ -60,15 +60,12 @@ how many passports are valid?
 """
 import re
 
+
 def Get_passport_data(Data_file):
     with open(Data_file, "r") as DFile:
         data = DFile.read()
         data = data.split("\n\n")
         return data
-
-
-passport_data = Get_passport_data("Day4Data.txt")
-
 
 
 def make_dict(string_Data):
@@ -82,7 +79,6 @@ def make_dict(string_Data):
             passport_data_list.append(d)
         elif len(d) == 7 and 'cid' not in d:
             passport_data_list.append(d)
-
 
     return passport_data_list
 
@@ -99,58 +95,58 @@ def simpleVaild(Dict_data):
             valid_passports_list.append(person)
             valid_passports += 1
         else:
-            #print("not Valid")
+            # print("not Valid")
             invalid_passports += 1
 
     print(f"The amount valid passports is: {valid_passports} ")
     return valid_passports_list
 
+
 def complexValid(valid_Dict_data):
     valid_passports = []
-    passport_fields = ["byr", "iyr", "eyr", "hgt", "hcl", "ecl", "pid"]
     passport_hair_colour = ["amb", "blu", "brn", "gry", "grn", "hzl", "oth"]
     for passenger in valid_Dict_data:
         valid_passport = 0
-# Checking for correct BirthDate
-        if int(passenger["byr"]) >= 1920 and int(passenger["byr"]) <= 2002:
+        # Checking for correct BirthDate
+        if 1920 <= int(passenger["byr"]) <= 2002:
             valid_passport += 1
         else:
             continue
-# Checking the correct Issue Date
-        if int(passenger["iyr"]) >= 2010 and int(passenger["byr"]) <= 2020:
+        # Checking the correct Issue Date
+        if 2010 <= int(passenger["iyr"]) <= 2020:
             valid_passport += 1
         else:
             continue
-# Checking the Correct Expiration Date
-        if int(passenger["eyr"]) >= 2020 and int(passenger["eyr"]) <= 2030:
+        # Checking the Correct Expiration Date
+        if 2020 <= int(passenger["eyr"]) <= 2030:
             valid_passport += 1
         else:
             continue
-# Looking For the right height
+        # Looking For the right height
 
         if passenger["hgt"][-2:] == "cm":
-            if int(passenger["hgt"][:-2]) >= 150 and int(passenger["hgt"][:-2]) <= 193:
+            if 150 <= int(passenger["hgt"][:-2]) <= 193:
                 valid_passport += 1
             else:
                 continue
         elif passenger["hgt"][-2:] == "in":
-            if int(passenger["hgt"][:-2]) >= 59 and int(passenger["hgt"][:-2]) <= 76:
+            if 59 <= int(passenger["hgt"][:-2]) <= 76:
                 valid_passport += 1
             else:
                 continue
         else:
             continue
-# Checking For correct eye Colour
+        # Checking For correct eye Colour
         if passenger["ecl"] in passport_hair_colour:
             valid_passport += 1
         else:
             continue
-# Checking For Correct hair Colour
+        # Checking For Correct hair Colour
         if re.fullmatch(r'#[0-9a-f]{6}', passenger["hcl"]):
             valid_passport += 1
         else:
             continue
-# checking for correct Pass ID
+        # checking for correct Pass ID
         if re.fullmatch(r'[0-9]{9}', passenger["pid"]):
             valid_passport += 1
         else:
@@ -161,13 +157,8 @@ def complexValid(valid_Dict_data):
     return valid_passports
 
 
-
 Answer1 = simpleVaild(make_dict(Get_passport_data("Day4Data.txt")))
-testAnser = simpleVaild(make_dict(Get_passport_data("test_data2.txt")))
-#test = simpleVaild(make_dict(Get_passport_data("Day4Data.txt")))
-
-guess = make_dict(Get_passport_data("Day4Data.txt"))
-
-second = (complexValid(guess))
+test = simpleVaild(make_dict(Get_passport_data("test_data2.txt")))
+second = complexValid(make_dict(Get_passport_data("Day4Data.txt")))
 
 print(len(second))
