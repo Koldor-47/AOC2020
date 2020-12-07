@@ -107,31 +107,30 @@ def simpleVaild(Dict_data):
 def complexValid(valid_Dict_data):
     valid_passports = 0
     passport_fields = ["byr", "iyr", "eyr", "hgt", "hcl", "ecl", "pid"]
+    passport_Hair_colour = ["amb", "blu", "brn", "gry", "grn", "hzl", "oth"]
     for passenger in valid_Dict_data:
-        print(f" Passenger birth {passenger['byr']} and passport Date {passenger['iyr']}")
         valid_passport = False
+# Checking for correct BirthDate
         if int(passenger["byr"]) >= 1920 and int(passenger["byr"]) <= 2002:
             valid_passport = True
-            print("hi")
         else:
             valid_passport = False
             continue
-
+# Checking the correct Issue Date
         if int(passenger["iyr"]) >= 2010 and int(passenger["byr"]) <= 2020:
             valid_passport = True
         else:
             valid_passport = False
             continue
-
+# Checking the Correct Expiration Date
         if int(passenger["eyr"]) >= 2020 and int(passenger["eyr"]) <= 2030:
             valid_passport = True
         else:
             valid_passport = False
             continue
-        print(passenger["hgt"])
+# Looking For the right height
         if passenger["hgt"][-2:] == "cm":
             if int(passenger["hgt"][:-2]) >= 150 and int(passenger["hgt"][:-2]) <= 193:
-                print(passenger["hgt"])
                 valid_passport = True
             else:
                 valid_passport = False
@@ -142,7 +141,28 @@ def complexValid(valid_Dict_data):
             else:
                 valid_passport = False
                 continue
-
+        else:
+            valid_passport = False
+            continue
+# Checking For correct eye Colour
+        if passenger["ecl"] in passport_Hair_colour:
+            valid_passport = True
+        else:
+            valid_passport = False
+            continue
+# Checking For Correct hair Colour
+        if re.match(r'#[0-9a-f]+', passenger["hcl"]):
+            valid_passport = True
+        else:
+            valid_passport = False
+            continue
+# checking for correct Pass ID
+        if re.match(r'[0-9]{9}', passenger["pid"]):
+            valid_passport = True
+        else:
+            valid_passport = False
+            print(passenger)
+            continue
 
         if valid_passport:
             valid_passports += 1
@@ -152,8 +172,8 @@ def complexValid(valid_Dict_data):
 
 
 Answer1 = simpleVaild(make_dict(Get_passport_data("Day4Data.txt")))
-testAnser = simpleVaild(make_dict(Get_passport_data("test_data.txt")))
+testAnser = simpleVaild(make_dict(Get_passport_data("test_data2.txt")))
 test = simpleVaild(make_dict(Get_passport_data("Day4Data.txt")))
 
 
-print(complexValid(testAnser))
+print(complexValid(Answer1))
