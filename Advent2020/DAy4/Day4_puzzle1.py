@@ -128,6 +128,20 @@ def complexValid(valid_Dict_data):
         else:
             valid_passport = False
             continue
+        print(passenger["hgt"])
+        if passenger["hgt"][-2:] == "cm":
+            if int(passenger["hgt"][:-2]) >= 150 and int(passenger["hgt"][:-2]) <= 193:
+                print(passenger["hgt"])
+                valid_passport = True
+            else:
+                valid_passport = False
+                continue
+        elif passenger["hgt"][-2:] == "in":
+            if int(passenger["hgt"][:-2]) >= 59 and int(passenger["hgt"][:-2]) <= 76:
+                valid_passport = True
+            else:
+                valid_passport = False
+                continue
 
 
         if valid_passport:
