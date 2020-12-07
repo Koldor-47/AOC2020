@@ -69,21 +69,22 @@ def Get_passport_data(Data_file):
 
 passport_data = Get_passport_data("Day4Data.txt")
 
-find_keypars = r'\w+\:[A-Za-z0-9#]+'
 
 
+def make_dict(string_Data):
+    passport_data_list = []
+    for passport in string_Data:
+        passport = repr(passport.replace("\n", ' '))
+        passport = passport.replace("'", "")
+        passport = passport.split()
+        d = dict(v.split(":") for v in passport)
+        if len(d) == 8:
+            passport_data_list.append(d)
+        elif len(d) == 7 and 'cid' not in d:
+            passport_data_list.append(d)
 
 
-def make_dict(string_data):
-    new_data = []
-    for passport in string_data:
-        password_dict = {}
-        keyPairs = re.findall(find_keypars, passport)
-        for item in keyPairs:
-            password_dict[item.split(":")[0]] = item.split(":")[1]
-        if len(password_dict) > 6:
-            new_data.append(password_dict)
-    return new_data
+    return passport_data_list
 
 
 def simpleVaild(Dict_data):
@@ -105,67 +106,57 @@ def simpleVaild(Dict_data):
     return valid_passports_list
 
 def complexValid(valid_Dict_data):
-    valid_passports = 0
+    valid_passports = []
     passport_fields = ["byr", "iyr", "eyr", "hgt", "hcl", "ecl", "pid"]
-    passport_Hair_colour = ["amb", "blu", "brn", "gry", "grn", "hzl", "oth"]
+    passport_hair_colour = ["amb", "blu", "brn", "gry", "grn", "hzl", "oth"]
     for passenger in valid_Dict_data:
-        valid_passport = False
+        valid_passport = 0
 # Checking for correct BirthDate
         if int(passenger["byr"]) >= 1920 and int(passenger["byr"]) <= 2002:
-            valid_passport = True
+            valid_passport += 1
         else:
-            valid_passport = False
             continue
 # Checking the correct Issue Date
         if int(passenger["iyr"]) >= 2010 and int(passenger["byr"]) <= 2020:
-            valid_passport = True
+            valid_passport += 1
         else:
-            valid_passport = False
             continue
 # Checking the Correct Expiration Date
         if int(passenger["eyr"]) >= 2020 and int(passenger["eyr"]) <= 2030:
-            valid_passport = True
+            valid_passport += 1
         else:
-            valid_passport = False
             continue
 # Looking For the right height
+
         if passenger["hgt"][-2:] == "cm":
             if int(passenger["hgt"][:-2]) >= 150 and int(passenger["hgt"][:-2]) <= 193:
-                valid_passport = True
+                valid_passport += 1
             else:
-                valid_passport = False
                 continue
         elif passenger["hgt"][-2:] == "in":
             if int(passenger["hgt"][:-2]) >= 59 and int(passenger["hgt"][:-2]) <= 76:
-                valid_passport = True
+                valid_passport += 1
             else:
-                valid_passport = False
                 continue
         else:
-            valid_passport = False
             continue
 # Checking For correct eye Colour
-        if passenger["ecl"] in passport_Hair_colour:
-            valid_passport = True
+        if passenger["ecl"] in passport_hair_colour:
+            valid_passport += 1
         else:
-            valid_passport = False
             continue
 # Checking For Correct hair Colour
-        if re.match(r'#[0-9a-f]+', passenger["hcl"]):
-            valid_passport = True
+        if re.fullmatch(r'#[0-9a-f]{6}', passenger["hcl"]):
+            valid_passport += 1
         else:
-            valid_passport = False
             continue
 # checking for correct Pass ID
-        if re.match(r'[0-9]{9}', passenger["pid"]):
-            valid_passport = True
+        if re.fullmatch(r'[0-9]{9}', passenger["pid"]):
+            valid_passport += 1
         else:
-            valid_passport = False
             continue
-
-        if valid_passport:
-            print(passenger)
-            valid_passports += 1
+        if valid_passport >= 7:
+            valid_passports.append(passenger)
 
     return valid_passports
 
@@ -173,7 +164,10 @@ def complexValid(valid_Dict_data):
 
 Answer1 = simpleVaild(make_dict(Get_passport_data("Day4Data.txt")))
 testAnser = simpleVaild(make_dict(Get_passport_data("test_data2.txt")))
-test = simpleVaild(make_dict(Get_passport_data("Day4Data.txt")))
+#test = simpleVaild(make_dict(Get_passport_data("Day4Data.txt")))
 
+guess = make_dict(Get_passport_data("Day4Data.txt"))
 
-print(complexValid(Answer1))
+second = (complexValid(guess))
+
+print(len(second))
