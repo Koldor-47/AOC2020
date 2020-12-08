@@ -32,6 +32,11 @@ def get_seat_id(bin_data, codes):
 
     return seat_id_list
 
+def find_my_seat(seat_ids):
+    set_seat_id = set(seat_ids)
+    full_range = set(range(min(seat_ids), max(seat_ids)))
+
+    return full_range.difference(set_seat_id)
 
 # Single Test
 Seat_number = "BBFFBBFRLL"
@@ -41,5 +46,6 @@ print(answer)
 #Answer Part 1
 puzzle1 = get_seat_id(get_input_data("Day5Data.txt"), ["F","B","L","R"])
 
+# Day 5 Answers
 print(max(puzzle1))
-
+print(find_my_seat(puzzle1))
