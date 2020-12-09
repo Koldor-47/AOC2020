@@ -56,10 +56,8 @@ def gold_bag_holder(luggage_data):
     gold_bag_name = "shiny gold bag"
     gold_bag_holder_bag = []
     for rule in luggage_data:
-        secondary_bags = []
         raw_bag_list = re.findall(r'\w+ \w+ bag', rule)
-        for bag in range(1, len(raw_bag_list)):
-            secondary_bags.append(raw_bag_list[bag])
+        secondary_bags = raw_bag_list[1:]
         for secondary_bag in secondary_bags:
             if secondary_bag == gold_bag_name:
                 gold_bag_holder_bag.append(raw_bag_list[0])
@@ -80,10 +78,14 @@ def test1(gold_carrying_bags, luggage_data):
 from_luggage_machine = get_luggage_data("day7Data.txt")
 
 gold_carrying_bags = gold_bag_holder(from_luggage_machine)
+bag_list_temp = test1(gold_carrying_bags, from_luggage_machine)
 
-print(gold_carrying_bags)
+bag_list = [item for b_list in bag_list_temp for item in b_list]
 
-print(test1(gold_carrying_bags, from_luggage_machine))
+print(test1(bag_list, from_luggage_machine))
+
 
 print(len(test1(gold_carrying_bags, from_luggage_machine)) + len(gold_carrying_bags) )
 test_string = "light red bags contain 1 bright white bag, 2 muted yellow bags."
+
+# I think im meant ot becount the amount of different bag that carry gold bags ...... 27 isn't the right asnwer
