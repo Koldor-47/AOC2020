@@ -43,52 +43,55 @@ you get all of it.)
 """
 
 import re
-import os
 
-print(os.getcwd())
+"""
+def get_luggage_data(luggage_data):
+    with open(luggage_data, "r") as F:
+        luggage_list = F.read().split("\n")
+    list_of_Bags = []
+
+    for rule in luggage_list:
+
+        Parent_bag = rule.split("contain")[0][:-5]
+        child_bags = rule.split("contain")[1]
+        if re.findall(r"([0-9]) (\w+ \w+)", child_bags):
+            C_bag_list = re.findall(r"([0-9]) (\w+ \w+)", child_bags)
+            bag = {"bag": Parent_bag, "Contains": C_bag_list}
+        else:
+            bag = {"bag": Parent_bag, "Contains": ()}
+
+        list_of_Bags.append(bag)
+    return list_of_Bags
+"""
 
 
 def get_luggage_data(luggage_data):
     with open(luggage_data, "r") as F:
         luggage_list = F.read().split("\n")
-    return luggage_list
+    list_of_Bags = []
+    Bags = {}
+    for rule in luggage_list:
+
+        Parent_bag = rule.split("contain")[0][:-5]
+        child_bags = rule.split("contain")[1]
+        if re.findall(r"([0-9]) (\w+ \w+)", child_bags):
+            C_bag_list = re.findall(r"([0-9]) (\w+ \w+)", child_bags)
+            Bags[Parent_bag] = C_bag_list
+        else:
+            Bags[Parent_bag] = []
+
+    return Bags
 
 
-def gold_bag_holder(luggage_data):
-    gold_bag_count = 0
-    gold_bag_name = "shiny gold bag"
-    gold_bag_holder_bag = []
-    for rule in luggage_data:
-        raw_bag_list = re.findall(r"\w+ \w+ bag", rule)
-        secondary_bags = raw_bag_list[1:]
-        for secondary_bag in secondary_bags:
-            if secondary_bag == gold_bag_name:
-                gold_bag_holder_bag.append(raw_bag_list[0])
-    return gold_bag_holder_bag
+the_bag_List = get_luggage_data("test_data.txt")
+
+reverse_order = {}
+
+for P_bag, C_bag_list in the_bag_List.items():
+    reverse_order[P_bag] = []
+    for C_bag in C_bag_list:
+        if C_bag[1] not in reverse_order[P_bag]:
+            reverse_order[P_bag].append(C_bag[1])
 
 
-def test1(gold_carrying_bags, luggage_data):
-    bag_list = []
-    for bag in luggage_data:
-        raw_bag_list = re.findall(r"\w+ \w+ bag", bag)
-        for G_bag in gold_carrying_bags:
-            if G_bag in raw_bag_list[1:]:
-                bag_list.append(raw_bag_list[:1])
-                break
-    return bag_list
-
-
-from_luggage_machine = get_luggage_data("day7Data.txt")
-
-gold_carrying_bags = gold_bag_holder(from_luggage_machine)
-bag_list_temp = test1(gold_carrying_bags, from_luggage_machine)
-
-bag_list = [item for b_list in bag_list_temp for item in b_list]
-
-print(test1(bag_list, from_luggage_machine))
-
-
-print(len(test1(gold_carrying_bags, from_luggage_machine)) + len(gold_carrying_bags))
-test_string = "light red bags contain 1 bright white bag, 2 muted yellow bags."
-
-# I think im meant ot becount the amount of different bag that carry gold bags ...... 27 isn't the right asnwer
+print(reverse_order)
