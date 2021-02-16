@@ -43,26 +43,7 @@ you get all of it.)
 """
 
 import re
-
-"""
-def get_luggage_data(luggage_data):
-    with open(luggage_data, "r") as F:
-        luggage_list = F.read().split("\n")
-    list_of_Bags = []
-
-    for rule in luggage_list:
-
-        Parent_bag = rule.split("contain")[0][:-5]
-        child_bags = rule.split("contain")[1]
-        if re.findall(r"([0-9]) (\w+ \w+)", child_bags):
-            C_bag_list = re.findall(r"([0-9]) (\w+ \w+)", child_bags)
-            bag = {"bag": Parent_bag, "Contains": C_bag_list}
-        else:
-            bag = {"bag": Parent_bag, "Contains": ()}
-
-        list_of_Bags.append(bag)
-    return list_of_Bags
-"""
+from collections import defaultdict
 
 
 def get_luggage_data(luggage_data):
@@ -71,9 +52,7 @@ def get_luggage_data(luggage_data):
     list_of_Bags = []
     Bags = {}
     for rule in luggage_list:
-
-        Parent_bag = rule.split("contain")[0][:-5]
-        child_bags = rule.split("contain")[1]
+        Parent_bag, child_bags = rule.split(" bags contain")
         if re.findall(r"([0-9]) (\w+ \w+)", child_bags):
             C_bag_list = re.findall(r"([0-9]) (\w+ \w+)", child_bags)
             Bags[Parent_bag] = C_bag_list
@@ -83,15 +62,32 @@ def get_luggage_data(luggage_data):
     return Bags
 
 
-the_bag_List = get_luggage_data("test_data.txt")
-
-reverse_order = {}
-
-for P_bag, C_bag_list in the_bag_List.items():
-    reverse_order[P_bag] = []
-    for C_bag in C_bag_list:
-        if C_bag[1] not in reverse_order[P_bag]:
-            reverse_order[P_bag].append(C_bag[1])
+the_bag_List = get_luggage_data("day7Data.txt")
 
 
-print(reverse_order)
+def reverse_order(bag_graph):
+    re_bag_graph = defaultdict(list)
+    for outer_bag, InnerBag_list in bag_graph.items():
+        for innerBag in InnerBag_list:
+            re_bag_graph[innerBag[1]].append(outer_bag)
+
+    return re_bag_graph
+
+
+theList = reverse_order(the_bag_List)
+
+# using recursion
+def Recursive_search(bag, visted=set()):
+    visted.add(bag)
+    next_bags = theList[bag]
+
+    for b in next_bags:
+        if b not in visted:
+            Recursive_search(b, visted)
+
+    return visted
+
+
+answer = Recursive_search("shiny gold")
+print(answer)
+print(len(answer) - 1)
